@@ -1,7 +1,9 @@
 //Adam Emanuel
 
-#include <iostream>
+#include <fstream>
 using namespace std;
+ifstream cin("abce.in");
+ofstream cout("abce.out");
 
 struct Nod {
     Nod *tata;
@@ -10,7 +12,7 @@ struct Nod {
     int data;
 };
 
-typedef Nod *PointerNod;
+typedef Nod* PointerNod;
 
 
 
@@ -45,7 +47,6 @@ public:
         }
 
         if (x == nullptr) {
-            cout<<"Valoarea data nu este in arbore\n";
             return;
         }
         split(x, s, t);
@@ -171,25 +172,22 @@ public:
     }
 
 
-    PointerNod findnodfinal(int k) {
+    void findnodfinal(int k) {
         PointerNod x = findnod(this->radacina, k);
         if (x!= nullptr) {
             splay(x);
-            cout<<"Am gasit nodul\n";
+            cout<<1<<"\n";
         }
         else{
-            cout<<"Nu am gasit nodul\n";
+            cout<<0<<"\n";
         }
+
+
     }
     
 
     
-    PointerNod maxim(PointerNod Nod) {
-        while (Nod->dreapta != nullptr) {
-            Nod = Nod->dreapta;
-        }
-        return Nod;
-    }
+
     
 
     void adauga(int valoare) {
@@ -224,6 +222,60 @@ public:
         splay(nod);
     }
 
+    PointerNod maxim(PointerNod Nod) {
+        while (Nod->dreapta != nullptr) {
+            Nod = Nod->dreapta;
+        }
+        return Nod;
+    }
+
+    PointerNod minim(PointerNod Nod) {
+        while (Nod->stanga != nullptr) {
+            Nod = Nod->stanga;
+        }
+        return Nod;
+    }
+
+    int  predecesor(PointerNod nod,int x){
+        if(nod== nullptr)
+            return  -1000000001;
+        if(nod->data>x)
+            return predecesor(nod->stanga,x);
+        return max(nod->data,predecesor(nod->dreapta,x));
+
+
+    }
+
+    void sir(PointerNod nod, int stanga, int dreapta) {
+        if ( nod == nullptr )
+            return;
+        sir(nod -> stanga, stanga, dreapta);
+        if ( nod->data >= stanga && nod -> data <= dreapta )
+            cout << nod->data << " " ;
+        sir( nod -> dreapta, stanga, dreapta) ;}
+
+    int  succesor(PointerNod nod,int x){
+        if(nod== nullptr)
+            return  1000000001;
+        if(nod->data<x)
+            return succesor(nod->dreapta,x);
+        return min(nod->data,succesor(nod->stanga,x));
+
+
+    }
+    void succesorfinal(int x){
+        cout<< succesor(this->radacina,x)<<"\n";
+    }
+    void predecesorfinal(int x){
+        cout<< predecesor(this->radacina,x)<<"\n";
+    }
+
+    void sirfinal(int stanga,int dreapta){
+        sir(this->radacina,stanga,dreapta);
+        cout<<"\n";
+    }
+
+
 
 
     void stergerefinala(int data) {
@@ -238,22 +290,32 @@ public:
 };
 
 int main() {
-
     SplayTree arbore;
-    arbore.adauga(15);
-    arbore.adauga(24);
-    arbore.adauga(45);
-    arbore.adauga(7);
-    arbore.adauga(58);
-    arbore.adauga(20);
-    arbore.adauga(21);
-    arbore.adauga(56);
-    arbore.adauga(32);
-    arbore.afisarefinala();
-    arbore.findnodfinal(7);
-    arbore.findnodfinal(2);
-    arbore.stergerefinala(58);
-    arbore.stergerefinala(21);
-    arbore.stergerefinala(1);
-    arbore.afisarefinala();
+    int q, c, x, y;
+    cin >> q;
+    for (int i = 0; i < q; i++) {
+        cin >> c;
+        if (c == 1) {
+            cin >> x;
+            arbore.adauga(x);
+        } else if (c == 2) {
+            cin >> x;
+            arbore.stergerefinala(x);
+        } else if (c == 3) {
+            cin >> x;
+            arbore.findnodfinal(x);
+        } else if (c == 4) {
+            cin >> x;
+            arbore.predecesorfinal(x);
+        } else if (c == 5) {
+            cin >> x;
+            arbore.succesorfinal(x);
+        } else if (c == 6) {
+            cin>>x>>y;
+            arbore.sirfinal(x,y);
+
+        }
+
+    }
 }
+
